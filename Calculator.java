@@ -11,109 +11,74 @@ public class Calculator {
             '*'
     };
     public String toSalve(String example) {
-        char operand = ' ';
-        int countOperands = 0;
-        int indexOperand = -1;
-        for (int i = 0; i < operands.length; i++) {
-
-            int placeOperand = example.indexOf(operands[i]);
-            if (placeOperand != -1) {
-                if (countOperands != 0) {
-                    try {
+        try {
+            char operand = ' ';
+            int countOperands = 0;
+            int indexOperand = -1;
+            for (int i = 0; i < operands.length; i++) {
+                int placeOperand = example.indexOf(operands[i]);
+                if (placeOperand != -1) {
+                    if (countOperands != 0) {
                         throw new Exception();
-                    } catch (Exception e) {
-                        return e.toString();
                     }
+                    indexOperand = placeOperand;
+                    countOperands++;
+                    operand = operands[i];
                 }
-                indexOperand = placeOperand;
-                countOperands++;
-                operand = operands[i];
             }
-        }
-        if(indexOperand == -1 || indexOperand != example.lastIndexOf(operand)) {
-            try {
+            if (indexOperand == -1 || indexOperand != example.lastIndexOf(operand)) {
                 throw new Exception();
-            } catch (Exception e) {
-                return e.toString();
             }
-        }
-        String[] arr = splitByIndex(example, indexOperand);
-        boolean arabyNumbs = false;
-        int a;
-        int b;
-        try{
-            a = Integer.parseInt(arr[0]);
-            arabyNumbs = true;
-            b = Integer.parseInt(arr[2]);
-            if(!(limit(a)&& limit(b))) {
-                try {
+
+            String[] arr = splitByIndex(example, indexOperand);
+            boolean arabyNumbs = false;
+            int a;
+            int b;
+            try {
+                a = Integer.parseInt(arr[0]);
+                arabyNumbs = true;
+                b = Integer.parseInt(arr[2]);
+
+            } catch (NumberFormatException e) {
+                b = RomanNumber.parseInt(arr[2]);
+                if (arabyNumbs) {
                     throw new Exception();
-                } catch (Exception e) {
-                    return e.toString();
+                }
+                a = RomanNumber.parseInt(arr[0]);
+                if (a == 0 || b == 0) {
+                    throw new Exception();
                 }
             }
-        } catch(NumberFormatException e) {
-            b = RymNumber.parseInt(arr[2]);
-            if (arabyNumbs) {
-                try {
-                    throw new Exception();
-                } catch (Exception ex) {
-                    return ex.toString();
-                }
+
+            if (!(limit(a) && limit(b))) {
+                throw new Exception();
             }
-            a = RymNumber.parseInt(arr[0]);
-            if (a == 0 || b == 0) {
-                try {
-                    throw new Exception();
-                } catch (Exception ex) {
-                    return ex.toString();
-                }
-            }
-        }
-        if(arabyNumbs) {
-            switch (operand){
-                case '+':
-                    return String.valueOf(a+b);
-                case '-':
-                    return String.valueOf(a-b);
-                case '/':
-                    return String.valueOf(a/b);
-                case '*':
-                    return String.valueOf(a*b);
-            }
-        } else {
+
             int answer;
             switch (operand) {
                 case '+':
-                    return RymNumber.parseRym(a + b);
+                    answer = a + b;
+                    break;
                 case '-':
                     answer = a - b;
-                    if (answer < 1) {
-                        try {
-                            throw new Exception();
-                        } catch (Exception ex) {
-                            return ex.toString();
-                        }
-                    }
-                    return RymNumber.parseRym(answer);
+                    break;
                 case '/':
                     answer = a / b;
-                    if (answer < 1) {
-                        try {
-                            throw new Exception();
-                        } catch (Exception ex) {
-                            return ex.toString();
-                        }
-                    }
-                    return RymNumber.parseRym(answer);
+                    break;
                 case '*':
-                    return RymNumber.parseRym(a * b);
+                    answer = a * b;
+                    break;
+                default:
+                    throw new Exception();
             }
-        }
-        try {
-            throw new Exception();
-        } catch (Exception e) {
-            return e.toString();
+
+            if(arabyNumbs) {
+                return String.valueOf(answer);
+            } else {
+                return RomanNumber.parseRym(answer);
+            }
+        } catch(Exception ex) {
+            return ex.toString();
         }
     }
 
